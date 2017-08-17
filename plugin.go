@@ -49,8 +49,7 @@ func (p *Plugin) Exec() error {
 		return err
 	}
 
-	p.writePipelineLetter()
-	return nil
+	return p.writePipelineLetter()
 }
 
 func (p Plugin) buildRunnerProperties() error {
@@ -98,18 +97,21 @@ func (p Plugin) execSonarRunner() error {
 	return nil
 }
 
-func (p Plugin) writePipelineLetter() {
+func (p Plugin) writePipelineLetter() error {
 
 	f, err := os.OpenFile(".Pipeline-Letter", os.O_APPEND|os.O_WRONLY|os.O_CREATE, 0666)
 	if err != nil {
 		logrus.Println("!!> Error creating / appending to .Pipeline-Letter")
-		return
+		return err
 	}
 	defer f.Close()
 
 	if _, err = f.WriteString(fmt.Sprintf("*SONAR*: %s/dashboard/index/%s\n", p.Host, strings.Replace(p.Key, "/", ":", -1))); err != nil {
 		logrus.Println("!!> Error writing to .Pipeline-Letter")
+		return err
 	}
+
+	return nil
 }
 
 func printCommand(cmd *exec.Cmd) {
