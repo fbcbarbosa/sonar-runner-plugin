@@ -59,12 +59,12 @@ func main() {
 		cli.StringFlag{
 			Name:   "key",
 			Usage:  "Project Key",
-			EnvVar: "PLUGIN_KEY,DRONE_REPO",
+			EnvVar: "PLUGIN_PROJECT_KEY,DRONE_REPO",
 		},
 		cli.StringFlag{
 			Name:   "name",
 			Usage:  "Project name",
-			EnvVar: "PLUGIN_NAME,DRONE_REPO",
+			EnvVar: "PLUGIN_PROJECT_NAME,DRONE_REPO",
 		},
 		cli.StringFlag{
 			Name:   "version",
@@ -115,12 +115,6 @@ func main() {
 			Usage:  "Print generated config - debug purposes",
 			EnvVar: "PLUGIN_DEBUG",
 		},
-		cli.StringFlag{
-			Name:   "allowed.branch.regex",
-			Usage:  "A regex to check against running branch to see if analysis is allowed",
-			EnvVar: "PLUGIN_ALLOWED_BRANCH_REGEX",
-			Value:  `(^master$|^develop$|^release\/+)`,
-		},
 	}
 
 	if err := app.Run(os.Args); err != nil {
@@ -147,11 +141,10 @@ func run(c *cli.Context) error {
 		LcovPath:   c.String("lcovpath"),
 		Debug:      c.Bool("debug"),
 
-		Path:        c.String("path"),
-		Repo:        c.String("repo.name"),
-		Default:     c.String("repo.branch"),
-		Branch:      c.String("commit.branch"),
-		BranchRegex: c.String("allowed.branch.regex"),
+		Path:    c.String("path"),
+		Repo:    c.String("repo.name"),
+		Default: c.String("repo.branch"),
+		Branch:  c.String("commit.branch"),
 	}
 
 	return plugin.Exec()
